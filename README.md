@@ -10,7 +10,7 @@ Azure Websites を利用して、簡単にアプリ専用の Web API を用意�
 ## 謝辞
 
 * [地獄のミサワの「女に惚れさす名言集」](http://jigokuno.com/) 
-* [惚れさせ男子データベース](http://jigokuno.com/) 
+* [惚れさせ男子データベース](https://github.com/june29/horesase-boys) 
 
 すばらしいコンテンツとJSONをありがとうございます。
 
