@@ -1,0 +1,165 @@
+﻿<div class="jumbotron">
+    <h1>Horesase Web API</h1>
+    <p class="lead"></p>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <h2><code>/meigens</code> - 検索 </h2>
+        <h4>Examples</h4>
+        <ul>
+            <li>/meigens</li>
+            <li>/meigens/1</li>
+            <li>/meigens?word=寝てない</li>
+            <li>/meigens?word=あ&character=あつし</li>
+        </ul>
+        <h3>Method</h3>
+        <p>
+            <table class="table table-bordered">
+                <tbody>
+                    <tr>
+                        <th>URI</th>
+                        <th>HTTP Method</th>
+                    </tr>
+                    <tr>
+                        <td>@HttpContext.Current.Request.Url.GetLeftPart(UriPartial.Authority)/api/meigens</td>
+                        <td>GET</td>
+                    </tr>
+                </tbody>
+            </table>
+        </p>
+        <h3>Request Parameters</h3>
+        <p>
+            <table class="table table-bordered">
+                <tbody>
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                        <th>Default</th>
+                        <th>Required?</th>
+                    </tr>
+                    <tr>
+                        <th>id</th>
+                        <td>Number</td>
+                        <td>ID指定 ex. /meigens/{id}</td>
+                        <td>N/A</td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <th>word</th>
+                        <td>String</td>
+                        <td>検索ワード</td>
+                        <td>N/A</td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <th>character</th>
+                        <td>String</td>
+                        <td>キャラ名</td>
+                        <td>N/A</td>
+                        <td>No</td>
+                    </tr>
+                </tbody>
+            </table>
+        </p>
+    </div>
+    <div class="col-md-6">
+        <h2><code>/characters</code> - キャラ一覧 </h2>
+        <h4>Examples</h4>
+        <ul>
+            <li>/characters</li>
+        </ul>
+        <h3>Method</h3>
+        <p>
+            <table class="table table-bordered">
+                <tbody>
+                    <tr>
+                        <th>URI</th>
+                        <th>HTTP Method</th>
+                    </tr>
+                    <tr>
+                        <td>@HttpContext.Current.Request.Url.GetLeftPart(UriPartial.Authority)/api/characters</td>
+                        <td>GET</td>
+                    </tr>
+                </tbody>
+            </table>
+        </p>
+        <h3>Request Parameters</h3>
+        <p>
+            なし
+        </p>
+    </div>
+
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <h2>Demo</h2>
+        <div class="well">
+            character : <select id="charSelect" data-bind="options:characters, value:selectedCharacter"></select>
+            word :  <input type="text" data-bind="value:searchWord" />
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Title</th>
+                    <th>Body</th>
+                </tr>
+            </thead>
+            <tbody data-bind="foreach: meigens">
+                <tr>
+                    <td><img data-bind="attr:{src : image}" /> </td>
+                    <td data-bind="text: title"></td>
+                    <td data-bind="text: body"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    function HomeViewModel() {
+        var self = this;
+        self.selectedCharacter = '';
+        self.searchWord = 'ごめん';
+        self.characters = [];
+        self.meigens = [];
+        ko.track(self);
+
+        ko.getObservable(this, 'selectedCharacter').subscribe(function (newValue) {
+            self.searchMeigens();
+        });
+
+        ko.getObservable(this, 'searchWord').subscribe(function (newValue) {
+            self.searchMeigens();
+        });
+
+        //function
+        self.searchMeigens = function () {
+            $.getJSON('/api/meigens?word=' + self.searchWord + '&character=' + $('#charSelect').val(), function (data) {
+                self.meigens = $.map(data, function (m) { return new Meigen(m) });
+            });
+        };
+        
+        //init
+        $.getJSON('/api/characters', function (data) {
+            self.characters = $.map(data, function (c) { return c.name });
+        });
+    }
+
+    function Meigen(data) {
+        this.title = data.title;
+        this.body = data.body;
+        this.character = data.character;
+        this.image = data.image;
+    }
+
+
+    ko.applyBindings(new HomeViewModel());
+</script>
