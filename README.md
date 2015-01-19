@@ -1,11 +1,15 @@
 # Horesase Web API on Azure
 
 地獄のミサワ先生の「女に惚れさす名言集」Web API を Azure に！  
-Azure Websites を利用して、簡単にアプリ専用の Web API を用意することができます。
+Azure Websites を利用して、簡単にアプリ専用の Web API を用意することができます。  
 
-## インストール
+## デプロイ方法
 
 [![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://azuredeploy.net/)
+
+## デプロイ例
+
+[http://horesase.azurewebsites.net/](http://horesase.azurewebsites.net/)
 
 ## 謝辞
 
