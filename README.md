@@ -1,4 +1,4 @@
-# Horesase Web API on Azure
+# Horesase Web API on Azure [![Build status](https://ci.appveyor.com/api/projects/status/xku2aanqklul0njv?svg=true)](https://ci.appveyor.com/project/minato128/horesase-web-api)
 
 地獄のミサワ先生の「女に惚れさす名言集」Web API を Azure に！  
 Azure Websites を利用して、簡単にアプリ専用の Web API を用意することができます。  
