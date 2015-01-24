@@ -10,8 +10,9 @@
         <ul>
             <li>/meigens</li>
             <li>/meigens/1</li>
+            <li>/meigens?limit=100&offset=2</li>
             <li>/meigens?word=寝てない</li>
-            <li>/meigens?word=あ&character=あつし</li>
+            <li>/meigens?word=ドラム&character=あつし</li>
         </ul>
         <h3>Method</h3>
         <p>
@@ -42,7 +43,7 @@
                     <tr>
                         <th>id</th>
                         <td>Number</td>
-                        <td>ID指定 ex. /meigens/{id}</td>
+                        <td>ID指定 例：/meigens/{id}</td>
                         <td>N/A</td>
                         <td>No</td>
                     </tr>
@@ -60,8 +61,30 @@
                         <td>N/A</td>
                         <td>No</td>
                     </tr>
+                    <tr>
+                        <th>limit</th>
+                        <td>Number</td>
+                        <td>検索結果の件数</td>
+                        <td>15</td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <th>offset</th>
+                        <td>Number</td>
+                        <td>検索結果の開始ページ</td>
+                        <td>0</td>
+                        <td>No</td>
+                    </tr>
                 </tbody>
             </table>
+        </p>
+
+        <h3>Responses</h3>
+        <p>
+            <ul>
+                <li>response data の json は、<a href="https://github.com/june29/horesase-boys">惚れさせ男子データベース</a> と同様です。</li>
+                <li>response header の<code>X-Pagination</code>に総件数と総ページ数が入れてあります。</li>
+            </ul>
         </p>
     </div>
     <div class="col-md-6">
@@ -89,6 +112,28 @@
         <p>
             なし
         </p>
+        <h3>Responses</h3>
+        <p>
+            キャラ名と件数           
+        </p>
+        <h4>Example</h4>
+<pre>
+[
+    {
+        "name": "KAZ(32)",
+        "count": 44
+    },
+    {
+        "name": "野村(21)",
+        "count": 13
+    },
+    {
+        "name": "コウヘイ(26)",
+        "count": 61
+    },
+    ...
+}
+</pre>
     </div>
 
 </div>
@@ -96,10 +141,14 @@
 <div class="row">
     <div class="col-md-12">
         <h2>Demo</h2>
-        <div class="well">
-            character : <select id="charSelect" data-bind="options:characters, value:selectedCharacter"></select>
-            word :  <input type="text" data-bind="value:searchWord" />
-        </div>
+        <form class="form-inline well">
+            <div class="form-group">
+                <select id="charSelect" class="form-control" data-bind="options:characters, optionsCaption:'', value:selectedCharacter"></select>
+            </div>
+            <div class="form-group">
+                <input type="search" class="form-control" data-bind="value:searchWord, valueUpdate:'afterkeydown'" />
+            </div>
+        </form>
     </div>
 </div>
 <div class="row">
@@ -127,7 +176,7 @@
     function HomeViewModel() {
         var self = this;
         self.selectedCharacter = '';
-        self.searchWord = 'ごめん';
+        self.searchWord = '実質';
         self.characters = [];
         self.meigens = [];
         ko.track(self);
@@ -142,11 +191,20 @@
 
         //function
         self.searchMeigens = function () {
-            $.getJSON('/api/meigens?word=' + self.searchWord + '&character=' + $('#charSelect').val(), function (data) {
-                self.meigens = $.map(data, function (m) { return new Meigen(m) });
+            $.ajax({
+                type: 'GET',
+                url: '/api/meigens?word=' + self.searchWord + '&character=' + $('#charSelect').val(),
+                data: null,
+                success: function (data, textStatus, request) {
+                    self.meigens = $.map(data, function (m) { return new Meigen(m) });
+                    //alert(request.getResponseHeader('X-Pagination'));
+                },
+                error: function (request, textStatus, errorThrown) {
+                    //
+                }
             });
         };
-        
+
         //init
         $.getJSON('/api/characters', function (data) {
             self.characters = $.map(data, function (c) { return c.name });
