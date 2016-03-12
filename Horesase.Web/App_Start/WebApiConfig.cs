@@ -9,11 +9,8 @@ namespace Horesase.Web
     {
         public static void Register(HttpConfiguration config)
         {
-            // Web API の設定およびサービス
-
-            // Web API ルート
+            config.Formatters.Remove(config.Formatters.XmlFormatter);
             config.MapHttpAttributeRoutes();
-
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
                 routeTemplate: "api/{controller}/{id}",
